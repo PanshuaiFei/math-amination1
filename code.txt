@@ -1,0 +1,40 @@
+import os
+
+# 更改工作目录
+os.chdir("C:/Users/feips/Desktop/PYTHON拟合线图")
+
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+# 定义复数函数
+def z(theta):
+    return 4 * np.exp(44j * theta) + 4 * np.exp(-17j * theta) + 1.3 * np.exp(-54j * theta)
+
+# 设置 θ 的范围
+theta_values = np.linspace(0, 2 * np.pi, 2000)
+
+# 初始化图形
+fig, ax = plt.subplots(figsize=(16, 9), dpi=300)  # 1:1 画幅，保持4K分辨率
+ax.set_facecolor('black')
+line, = ax.plot([], [], color='#FFC75F')
+
+# 设置 x, y 的限制为相同以保持比例1:1
+ax.set_xlim(-10, 10)
+ax.set_ylim(-10, 10)
+ax.set_aspect('equal', adjustable='box')  # 设置比例为 1:1
+
+# 动画更新函数
+def update(frame):
+    current_theta = theta_values[:frame]
+    current_z = z(current_theta)
+    line.set_data(current_z.real, current_z.imag)
+    return line,
+
+# 创建动画
+ani = animation.FuncAnimation(fig, update, frames=len(theta_values), blit=True, interval=10)
+
+# 保存动画
+ani.save('complex_path_animation.mp4', writer='ffmpeg', fps=60)
+
+plt.show()
